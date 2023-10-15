@@ -4,7 +4,7 @@ import sqlite3
 import discord
 from discord.ext import commands, tasks
 
-import debug_settings as settings
+import settings as settings
 
 
 class Tasks(commands.Cog):
@@ -33,44 +33,48 @@ class Tasks(commands.Cog):
         con.close()
 
         # もし勉強時間の上位10人がいた場合
-        if top10:
+        if not top10:
 
-            embed = discord.Embed(
-                title='勉強時間ランキング',
-                description='勉強時間の上位10人を表示しています。',
-                color=discord.Color.green()
-            )
+            return
 
-            for i in top10:
+        embed = discord.Embed(
+            title='勉強時間ランキング',
+            description='勉強時間の上位10人を表示しています。',
+            color=discord.Color.green()
+        )
 
-                # 秒数を時間、分、秒に変換する。
-                hours, remainder = divmod(i[1], 3600)
-                minutes, seconds = divmod(remainder, 60)
+        for i in top10:
 
-                guild = self.bot.get_guild(settings.guild_id)
+            # 秒数を時間、分、秒に変換する。
+            hours, remainder = divmod(i[1], 3600)
+            minutes, seconds = divmod(remainder, 60)
 
-                member = guild.get_member(i[0])
+            guild = self.bot.get_guild(settings.guild_id)
 
-                # メンバーがサーバーにいるか確認
-                if member:
+            member = guild.get_member(i[0])
 
-                    # ランキングの順位付きのメンバー情報を追加
-                    embed.add_field(
-                        name=f'{top10.index(i) + 1}位│{member.display_name}',
-                        value=f'{int(hours)}時間 {int(minutes)}分 {int(seconds)}秒',
-                    )
+            # メンバーがサーバーにいるか確認
+            if member:
 
-                # もしメンバーがサーバーにいない場合
-                else:
+                # ランキングの順位付きのメンバー情報を追加
+                embed.add_field(
+                    name=f'{top10.index(i) + 1}位│{member.display_name}',
+                    value=f'{int(hours)}時間 {int(minutes)}分 {int(seconds)}秒',
+                )
 
-                    embed.add_field(
-                        name=f'{top10.index(i) + 1}位│{i[0]}',
-                        value=f'{int(hours)}時間 {int(minutes)}分 {int(seconds)}秒',
-                    )
+            # もしメンバーがサーバーにいない場合
+            else:
 
-                channel = self.bot.get_channel(settings.send_study_time_ranking_channel_id)
+                embed.add_field(
+                    name=f'{top10.index(i) + 1}位│{i[0]}',
+                    value=f'{int(hours)}時間 {int(minutes)}分 {int(seconds)}秒',
+                )
 
-                await channel.send(embed=embed)
+        channel = self.bot.get_channel(settings.send_study_time_ranking_channel_id)
+
+        await channel.send(embed=embed)
+
+        return
 
 
 async def setup(bot: commands.Bot):
