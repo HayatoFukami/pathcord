@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-import debug_settings as settings
+import settings as settings
 
 
 # noinspection PyUnresolvedReferences
@@ -143,6 +143,7 @@ class Study(app_commands.Group):
                     embed.add_field(
                         name=f'{top10.index(i) + 1}位│{member.display_name}',
                         value=f'{int(hours)}時間 {int(minutes)}分 {int(seconds)}秒',
+                        inline=False
                     )
 
                 # もしメンバーがサーバーにいない場合
@@ -151,9 +152,10 @@ class Study(app_commands.Group):
                     embed.add_field(
                         name=f'{top10.index(i) + 1}位│{i[0]}',
                         value=f'{int(hours)}時間 {int(minutes)}分 {int(seconds)}秒',
+                        inline=False
                     )
 
-                await interaction.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed)
 
         # もし勉強時間の上位10人がいなかった場合
         else:

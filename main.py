@@ -3,7 +3,7 @@ import os
 import discord
 from discord.ext import commands
 
-import debug_settings as settings
+import settings as settings
 
 
 class Bot(commands.Bot):

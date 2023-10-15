@@ -4,7 +4,7 @@ import time
 import discord
 from discord.ext import commands
 
-import debug_settings as settings
+import settings as settings
 
 
 class Events(commands.Cog):
